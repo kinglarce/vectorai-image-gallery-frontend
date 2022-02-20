@@ -1,4 +1,5 @@
 import React, { FC } from "react";
+import { ImageViewer } from "../ImageViewer/ImageViewer";
 
 interface ImageDetailProps {
   image: string;
@@ -7,9 +8,9 @@ interface ImageDetailProps {
 
 export const ImageDetail: FC<ImageDetailProps> = (props) => (
   <>
-    <div>
+    <ImageViewer>
       <label>{props.title}</label>
       <img src={props.image} alt="Your image" style={{ maxWidth: "100%" }} />
-    </div>
+    </ImageViewer>
   </>
 );

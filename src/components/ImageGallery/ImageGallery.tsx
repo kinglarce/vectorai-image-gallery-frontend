@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { ImageDetail } from "../ImageDetail/ImageDetail";
 import { SortableContainer, SortableElement, arrayMove } from "react-sortable-hoc";
 import { Grid } from "./style";
 import { getData } from "../../api/index";
@@ -20,7 +21,7 @@ interface SortingProps {
   newIndex: number;
 }
 
-const SortableImages = SortableElement((item: SortableElementProps) => <div>Item {item.title}</div>);
+const SortableImages = SortableElement((item: SortableElementProps) => <ImageDetail {...item} />);
 const SortableImageGallery = SortableContainer(({ items }: { items: Data[] }) => (
   <Grid>
     {items.map((value: Data, index) => (

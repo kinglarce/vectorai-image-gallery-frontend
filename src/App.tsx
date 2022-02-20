@@ -1,9 +1,10 @@
 import React from "react";
+import { ImageGallery } from "./components/ImageGallery/ImageGallery";
 
-function App() {
+const App = () => {
   return (
     <div className='App'>
-      Hello Clean React
+      Hello React
     </div>
   );
 }

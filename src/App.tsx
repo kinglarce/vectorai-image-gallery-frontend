@@ -4,7 +4,7 @@ import { ImageGallery } from "./components/ImageGallery/ImageGallery";
 const App = () => {
   return (
     <div className='App'>
-      Hello React
+      <ImageGallery />
     </div>
   );
 }

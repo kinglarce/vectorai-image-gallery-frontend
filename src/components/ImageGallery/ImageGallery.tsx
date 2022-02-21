@@ -2,8 +2,11 @@ import React, { useState, useEffect } from "react";
 import { ImageDetail } from "../ImageDetail/ImageDetail";
 import { SortableContainer, SortableElement, arrayMove } from "react-sortable-hoc";
 import { Grid } from "./style";
-import { getData } from "../../api/index";
+import { getData, syncData } from "../../api/index";
 import { Data } from "../../interface";
+import { Loading } from '../Loading/Loading';
+
+const INTERVAL_SECONDS = 5000;
 
 interface SortableElementProps {
   image: string;
@@ -31,6 +34,9 @@ const SortableImageGallery = SortableContainer(({ items }: { items: Data[] }) =>
 
 export const ImageGallery = () => {
   const [items, setItems] = useState<Data[]>([]);
+  const [lastUpdate, setLastUpdate] = useState<string>(new Date().toLocaleString());
+  const [isUpdated, setIsUpdated] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     getData().then((response: Data[] | undefined) => {
@@ -38,14 +44,39 @@ export const ImageGallery = () => {
     });
   }, []);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (isUpdated) {
+        setLoading(true);
+        syncData(items).then(() => {
+          setIsUpdated(false);
+          setLastUpdate(new Date().toLocaleString());
+          setLoading(false);
+        });
+      }
+    }, INTERVAL_SECONDS);
+    return () => clearInterval(interval);
+  }, [isUpdated, items]);
+
   const onSortEnd = ({ oldIndex, newIndex }: SortingProps) => {
-    setItems(arrayMove(items, oldIndex, newIndex));
+    // Note: Verifying if change has been made
+    if (oldIndex !== newIndex) {
+      const updatedItems = arrayMove(items, oldIndex, newIndex);
+      const updatedPositionItems = updatedItems
+          .map((data: Data, index: number) => ({...data, position: index}));
+      setItems(updatedPositionItems);
+      setIsUpdated(true);
+    }
   };
 
   return (
     <>
       <h2>Vector AI Image Gallery</h2>
-      <SortableImageGallery items={items} onSortEnd={onSortEnd} axis={"xy"} distance={1} />
+      <label>Last Updated: {lastUpdate}</label>
+      <Loading loading={loading} />
+      <div style={{ display: loading ? "none" : "block" }}>
+        <SortableImageGallery items={items} onSortEnd={onSortEnd} axis={"xy"} distance={1} />
+      </div>
     </>
   );
 };

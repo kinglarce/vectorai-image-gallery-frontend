@@ -11,3 +11,13 @@ export const getData = async (): Promise<Data[] | undefined> => {
     console.log(error)
   }
 }
+
+export const syncData = async (payload: Data[]): Promise<boolean | undefined> => {
+  try {
+    console.log('Sync data');
+    await axios.post(`${apiURL}/bank`, payload);
+    return true;
+  } catch (error) {
+    console.log(error)
+  }
+}

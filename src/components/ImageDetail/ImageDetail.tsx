@@ -1,6 +1,6 @@
 import React, { FC, useState } from "react";
 import { ImageViewer } from "../ImageViewer/ImageViewer";
-import { LoadingSpinner } from "./style";
+import { Loading } from "../Loading/Loading"
 
 interface ImageDetailProps {
   image: string;
@@ -13,9 +13,7 @@ export const ImageDetail: FC<ImageDetailProps> = (props) => {
 
   return (
     <div>
-      <div style={{ display: loading ? "block" : "none" }}>
-        <LoadingSpinner />
-      </div>
+      <Loading loading={loading} />
       <div style={{ display: loading ? "none" : "block" }}>
         <ImageViewer>
           <label>{props.title}</label>

@@ -1,15 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ImageDetail } from "../ImageDetail/ImageDetail";
 import { SortableContainer, SortableElement, arrayMove } from "react-sortable-hoc";
 import { Grid } from "./style";
 import { getData } from "../../api/index";
-
-interface Data {
-  type: string;
-  title: string;
-  position: number;
-  image: string;
-}
+import { Data } from "../../interface";
 
 interface SortableElementProps {
   image: string;
@@ -36,7 +30,13 @@ const SortableImageGallery = SortableContainer(({ items }: { items: Data[] }) =>
 ));
 
 export const ImageGallery = () => {
-  const [items, setItems] = useState<Data[]>(getData);
+  const [items, setItems] = useState<Data[]>([]);
+
+  useEffect(() => {
+    getData().then((response: Data[] | undefined) => {
+      setItems(response!)
+    });
+  }, []);
 
   const onSortEnd = ({ oldIndex, newIndex }: SortingProps) => {
     setItems(arrayMove(items, oldIndex, newIndex));
